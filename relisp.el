@@ -1,16 +1,4 @@
 
-;; region-activity detection
-(setq relisp-region-active nil)
-
-(defun relisp-region-active-on ()
-  (setq relisp-region-active t))
-
-(defun relisp-region-active-off ()
-  (setq relisp-region-active nil))
-
-(add-hook 'activate-mark-hook 'relisp-region-active-on)
-(add-hook 'deactivate-mark-hook 'relisp-region-active-off)
-
 ;; active s-exp detection
 
 (defun relisp-glyphs-at-cursor ()
@@ -41,13 +29,13 @@
 
 (defun relisp-get-sexpr-beginning ()
   (save-excursion
-    (when (not relisp-region-active)
+    (when (not mark-active)
       (relisp-select-sexp))
     (region-beginning)))
 
 (defun relisp-get-sexpr-end ()
   (save-excursion
-    (when (not relisp-region-active)
+    (when (not mark-active)
       (relisp-select-sexp))
     (region-end)))
 
