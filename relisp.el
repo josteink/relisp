@@ -29,9 +29,9 @@
 (defun relisp-select-sexp ()
   "Function which attempts to auto-select the \"current\" s-expression the user is working with."
   (interactive)
-  (let ((glyphs (relisp-glyphs-at-cursor)))
-    (prin1 glyphs)
-    (when (not (equal "(" (substring glyphs 1 1)))
+  (let* ((glyphs      (relisp-glyphs-at-cursor))
+	 (first-glyph (substring (aref glyphs 0) 0 1)))
+    (when (not (equal "(" first-glyph))
       (goto-char (search-backward "("))))
   (mark-sexp))
 
@@ -108,3 +108,6 @@
   )
 
 (add-hook 'elisp-mode-hook 'relisp-elisp-mode-hook)
+
+
+(provide 'relisp)
