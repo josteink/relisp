@@ -35,16 +35,15 @@
       (goto-char (search-backward "("))))
   (mark-sexp))
 
-;;; for debugging. remove when done.
-(local-s (kbd "C-' C-s") 'relisp-select-sexp)
+;; region utility methods
 
-(defun relisp-get-region-beginning ()
+(defun relisp-get-sexpr-beginning ()
   (save-excursion
     (when (not relisp-region-active)
       (relisp-select-sexp))
     (region-beginning)))
 
-(defun relisp-get-region-end ()
+(defun relisp-get-sexpr-end ()
   (save-excursion
     (when (not relisp-region-active)
       (relisp-select-sexp))
@@ -59,16 +58,8 @@
   "Extracts a function based on the currently active s-expression."
   (interactive)
 
-  ;; get "points/marks" for the current s-expression
-  ;; get string for this region
-  ;; kill this region
-  ;; navigate to the "top" codeblock
-  ;; insert (defun function-name () "Insert documentation here"
-  ;; insert body
-  ;; insert )
-
-  (let* ((start         (region-beginning))
-         (end           (region-end))
+  (let* ((start         (relisp-get-sexpr-beginning))
+         (end           (relisp-get-sexpr-end))
          (function-body (buffer-substring-no-properties start end))
          (function-name (read-string "Function-name: ")))
     (save-excursion
@@ -83,8 +74,10 @@
       (newline)
       (indent-whole-buffer))))
 
-
-
+(defun relisp-initialize-debug ()
+  (local-set-key (kbd "C-' C-x") 'relisp-extract-function)
+  (local-set-key (kbd "C-' x") 'relisp-extract-function)
+  (local-set-key (kbd "C-M-<SPC>") 'relisp-select-sexp))
 
 
 ;; setup as a minor-mode
@@ -109,7 +102,9 @@
 ;; (defun relisp-mode-activate ()
 ;;   (relisp-mode t))
 
-;; (defun relisp-elisp-mode-hook ()
-;;   (local-set-key (kbd "C-'" 'relisp-mode-activate)))
+(defun relisp-elisp-mode-hook ()
+  (relisp-initialize-debug)
+  ;;(local-set-key (kbd "C-'" 'relisp-mode-activate))
+  )
 
-;; (add-hook 'elisp-mode-hook 'relisp-elisp-mode-hook)
+(add-hook 'elisp-mode-hook 'relisp-elisp-mode-hook)
