@@ -61,7 +61,7 @@
 	     (f-end   (region-end)))
 	(save-restriction
 	  (narrow-to-region f-start f-end)
-	  (insert "(defun " function-name "()" )
+	  (insert "(defun " function-name " ()" )
 	  (newline-and-indent)
 	  (insert function-body ")")
 	  (newline)
