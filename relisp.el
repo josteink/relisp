@@ -56,12 +56,17 @@
       (insert "(" function-name ")")
 
       (beginning-of-defun)
-      (insert "(defun " function-name "()" )
-      (newline-and-indent)
-      (insert function-body ")")
-      (newline)
-      (newline)
-      (indent-whole-buffer))))
+      (mark-sexp)
+      (let* ((f-start (region-beginning))
+	     (f-end   (region-end)))
+	(save-restriction
+	  (narrow-to-region f-start f-end)
+	  (insert "(defun " function-name "()" )
+	  (newline-and-indent)
+	  (insert function-body ")")
+	  (newline)
+	  (newline)
+	  (indent-region (point-min) (point-max) nil))))))
 
 ;; minor-mode tweaks
 
