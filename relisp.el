@@ -30,12 +30,14 @@
   "Function which attempts to auto-select the \"current\" s-expression the user is working with."
   (interactive)
   (let* ((glyphs      (relisp-glyphs-at-cursor))
-	 (first-glyph (substring (aref glyphs 0) 0 1)))
-    (when (not (equal "(" first-glyph))
+         (first-glyph (substring (aref glyphs 0) 0 1))
+         (glyph-start (aref glyphs 1)))
+    (if (equal "(" first-glyph)
+        (goto-char glyph-start)
       (goto-char (search-backward "("))))
   (mark-sexp))
 
-;; region utility methods
+;; region utility method
 
 (defun relisp-get-sexpr-beginning ()
   (save-excursion
@@ -49,10 +51,9 @@
       (relisp-select-sexp))
     (region-end)))
 
-
-(defun relisp-rename-symbol (old-symbol new-symbol)
-  "Renames a symbol within a buffer."
-  )
+;; (defun relisp-rename-symbol (old-symbol new-symbol)
+;;   "Renames a symbol within a buffer."
+;;   )
 
 (defun relisp-extract-function ()
   "Extracts a function based on the currently active s-expression."
@@ -74,40 +75,23 @@
       (newline)
       (indent-whole-buffer))))
 
-(defun relisp-initialize-debug ()
-  (local-set-key (kbd "C-' C-x") 'relisp-extract-function)
-  (local-set-key (kbd "C-' x") 'relisp-extract-function)
-  (local-set-key (kbd "C-M-<SPC>") 'relisp-select-sexp))
+;; minor-mode tweaks
 
+(defvar relisp-mode-map
+  (let* ((map (make-sparse-keymap)))
+    ;;(define-key map (kbd "C-' ?") 'relisp-show-help)
+    ;;(define-key map (kbd "C-' r") 'relisp-rename-symbol)
+    ;;(define-key map (kbd "C-' i") 'relisp-inline-symbol)
+    (define-key map (kbd "C-' C-x") 'relisp-extract-function)
+    (define-key map (kbd "C-M-<SPC>") 'relisp-select-sexp)
+    map))
 
-;; setup as a minor-mode
-
-
-;; (defvar relisp-mode-map (make-sparse-keymap))
-;; (let* ((map relisp-mode-map))
-;;   (define-key map (kbd "?") 'relisp-show-help)
-;;   (define-key map (kbd "r") 'relisp-rename-symbol)
-;;   (define-key map (kbd "x") 'relisp-extract-function)
-;;   (define-key map (kbd "i") 'relisp-inline-symbol))
-
-;; (define-minor-mode relisp-mode
-;;   "Minor-mode which enables elisp refactorings."
-;;   :init-value nil
-;;   :lighter " Region"
-;;   :keymap 'relisp-mode-map
-;;   :group 'relisp
-;;   )
-
-
-;; (defun relisp-mode-activate ()
-;;   (relisp-mode t))
-
-(defun relisp-elisp-mode-hook ()
-  (relisp-initialize-debug)
-  ;;(local-set-key (kbd "C-'" 'relisp-mode-activate))
+(define-minor-mode relisp-mode
+  "Minor-mode which enables elisp refactorings."
+  :init-value nil
+  :lighter " Region"
+  :keymap 'relisp-mode-map
+  :group 'relisp
   )
-
-(add-hook 'elisp-mode-hook 'relisp-elisp-mode-hook)
-
 
 (provide 'relisp)
