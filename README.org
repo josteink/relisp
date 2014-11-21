@@ -8,14 +8,14 @@ It may be expanded to support other LISP-forms like Common Lisp, Scheme and Cloj
 
 The following functions are either implemented or planned.
 
-|----------------+-------------+-----------------------------------------------------|
-| Function       | Key-binding | Comment / Status                                    |
-|----------------+-------------+-----------------------------------------------------|
-| Select sexp    | C-M-<SPC>   | Improved version of `mark-sexp`.                    |
-| Extract method | C-' C-x     | Implemented, but does not detect local symbol usage |
-| Rename symbol  | C-' C-r     | TODO                                                |
-| Inline symbol  | C-' C-i     | TODO                                                |
-|----------------+-------------+-----------------------------------------------------|
+|------------------+-------------+------------------------------------------------------|
+| Function         | Key-binding | Comment / Status                                     |
+|------------------+-------------+------------------------------------------------------|
+| Select sexp      | C-M-<SPC>   | Improved version of ~mark-sexp~.                     |
+| Extract function | C-' C-x     | Implemented, but does not detect local symbol usage. |
+| Rename symbol    | C-' C-r     | TODO                                                 |
+| Inline symbol    | C-' C-i     | TODO                                                 |
+|------------------+-------------+------------------------------------------------------|
 
 ** Installation
 
@@ -30,7 +30,7 @@ First clone the repo. The code has no other or external dependencies.
   git clone https://github.com/josteink/relisp.git
 #+END_SRC
 
-Add the following line to your `.emacs` or `init.el` (or wherever you stash things like this):
+Add the following line to your ~.emacs~ or ~init.el~ (or wherever you stash things like this):
 
 #+BEGIN_SRC emacs-lisp
   (load-file "~/emacs-packages/relisp/relisp.el")
