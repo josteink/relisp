@@ -1,5 +1,7 @@
 
+
 ;; utility macros
+
 
 (defmacro with-region (start end &rest body)
   `(save-restriction
@@ -14,7 +16,9 @@
      (with-region (region-beginning) (region-end)
                   ,@body)))
 
+
 ;; active s-exp detection
+
 
 (defun relisp-char-at-point ()
   "Returns the character at the current point, or an empty string if at buffer-end."
@@ -31,7 +35,9 @@
   ;; make it easier to select subsequent sibling s-expressions
   (exchange-point-and-mark))
 
+
 ;; region utility functions
+
 
 (defun relisp-get-sexpr-beginning ()
   (save-excursion
@@ -54,6 +60,10 @@
   (set-mark-command nil)
   (goto-char end)
   (setq deactivate-mark nil))
+
+
+;; refactoring implementations
+
 
 ;; (defun relisp-rename-symbol (old-symbol new-symbol)
 ;;   "Renames a symbol within a buffer."
@@ -99,10 +109,11 @@
              (relisp-elisp-insert-function function-name function-body))
        (indent-region (point-min) (point-max) nil)))
     ;; highlight the doc-string so that it is ready for editing
-    (relisp-select-region (car doc-points) (car (cdr doc-points)))))
+    (apply 'relisp-select-region doc-points)))
 
 
-;; minor-mode tweaks
+;; minor-mode setup
+
 
 (defvar relisp-mode-map
   (let* ((map (make-sparse-keymap)))
