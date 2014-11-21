@@ -12,7 +12,9 @@
   (interactive)
   (if (not (equal "(" (relisp-char-at-point)))
       (search-backward "("))
-  (mark-sexp))
+  (mark-sexp)
+  ;; make it easier to select subsequent sibling s-expressions
+  (exchange-point-and-mark))
 
 ;; region utility method
 
