@@ -73,7 +73,7 @@
 (define-minor-mode relisp-mode
   "Minor-mode which enables elisp refactorings."
   :init-value nil
-  :lighter " Region"
+  :lighter " Relisp"
   :keymap 'relisp-mode-map
   :group 'relisp
   )
