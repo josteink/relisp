@@ -3,7 +3,7 @@
 (defun test ()
   (when boo
     (hiss-woo!)
-    (yay
+      (yay
      (moo :more #woo)
      (zoo)))
   (some-more))
