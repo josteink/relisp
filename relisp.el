@@ -1,28 +1,17 @@
 
 ;; active s-exp detection
 
-(defun relisp-glyphs-at-cursor ()
-  "Return the glyph at the current cursor-position.
-
-  Based on the code found here for unit-at-cursor: http://ergoemacs.org/emacs/elisp_get-selection-or-unit.html"
-  (let (p1 p2)
-    (save-excursion
-      (progn
-        (skip-chars-backward "[:graph:]")
-        (setq p1 (point))
-        (skip-chars-forward "[:graph:]")
-        (setq p2 (point))))
-    (vector (buffer-substring-no-properties p1 p2) p1 p2 )) )
+(defun relisp-char-at-point ()
+  "Returns the character at the current point, or an empty string if at buffer-end."
+  (let* ((start (point))
+	 (end   (min (point-max) (+ 1 start))))
+    (buffer-substring-no-properties start end)))
 
 (defun relisp-select-sexp ()
   "Function which attempts to auto-select the \"current\" s-expression the user is working with."
   (interactive)
-  (let* ((glyphs      (relisp-glyphs-at-cursor))
-         (first-glyph (substring (aref glyphs 0) 0 1))
-         (glyph-start (aref glyphs 1)))
-    (if (equal "(" first-glyph)
-        (goto-char glyph-start)
-      (goto-char (search-backward "("))))
+  (if (not (equal "(" (relisp-char-at-point)))
+      (search-backward "("))
   (mark-sexp))
 
 ;; region utility method
@@ -58,15 +47,15 @@
       (beginning-of-defun)
       (mark-sexp)
       (let* ((f-start (region-beginning))
-	     (f-end   (region-end)))
-	(save-restriction
-	  (narrow-to-region f-start f-end)
-	  (insert "(defun " function-name " ()" )
-	  (newline-and-indent)
-	  (insert function-body ")")
-	  (newline)
-	  (newline)
-	  (indent-region (point-min) (point-max) nil))))))
+             (f-end   (region-end)))
+        (save-restriction
+          (narrow-to-region f-start f-end)
+          (insert "(defun " function-name " ()" )
+          (newline-and-indent)
+          (insert function-body ")")
+          (newline)
+          (newline)
+          (indent-region (point-min) (point-max) nil))))))
 
 ;; minor-mode tweaks
 
