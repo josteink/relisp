@@ -7,7 +7,7 @@
 	 (end   (min (point-max) (+ 1 start))))
     (buffer-substring-no-properties start end)))
 
-(defun relisp-select-sexp ()
+(defun relisp-mark-sexp-dwim ()
   "Function which attempts to auto-select the \"current\" s-expression the user is working with."
   (interactive)
   (if (not (equal "(" (relisp-char-at-point)))
@@ -19,13 +19,13 @@
 (defun relisp-get-sexpr-beginning ()
   (save-excursion
     (when (not mark-active)
-      (relisp-select-sexp))
+      (relisp-mark-sexp-dwim))
     (region-beginning)))
 
 (defun relisp-get-sexpr-end ()
   (save-excursion
     (when (not mark-active)
-      (relisp-select-sexp))
+      (relisp-mark-sexp-dwim))
     (region-end)))
 
 ;; (defun relisp-rename-symbol (old-symbol new-symbol)
@@ -65,7 +65,7 @@
     ;;(define-key map (kbd "C-' r") 'relisp-rename-symbol)
     ;;(define-key map (kbd "C-' i") 'relisp-inline-symbol)
     (define-key map (kbd "C-' C-x") 'relisp-extract-function)
-    (define-key map (kbd "C-M-<SPC>") 'relisp-select-sexp)
+    (define-key map (kbd "C-M-<SPC>") 'relisp-mark-sexp-dwim)
     map))
 
 (define-minor-mode relisp-mode
