@@ -8,3 +8,7 @@
      (zoo)))
   (some-more))
 
+(defun boo ()
+  
+  (a "yeah (nmmmm)")
+  (b))

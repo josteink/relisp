@@ -19,6 +19,14 @@
 
 ;; active s-exp detection
 
+(defun relisp-point-is-code-p ()
+  "Returns wheter the current point represents code or not based on emacs-internal analysis."
+  ;; code 100% based on this write-up
+  ;; http://www.masteringemacs.org/article/swapping-quote-symbols-emacs-parsepartialsexp
+  (interactive)
+  (let ((type (syntax-ppss-context (syntax-ppss (point)))))
+    (and (not (eq 'string type))
+         (not (eq 'comment type)))))
 
 (defun relisp-char-at-point ()
   "Returns the character at the current point, or an empty string if at buffer-end."
@@ -26,11 +34,25 @@
          (end   (min (point-max) (+ 1 start))))
     (buffer-substring-no-properties start end)))
 
+(defun relisp-point-is-sexp-p ()
+  "Determines if the current point represents a sexp."
+  (and (equal "(" (relisp-char-at-point))
+       (relisp-point-is-code-p)))
+
+(defun relisp-navigate-up-to-sexp ()
+  "Navigates up to the first sexp detected."
+  (paredit-backward-up)
+  ;; paredit navigate up stop at string delimiters like ".
+  ;; recurse out way to goal.
+  (when (and (not (relisp-point-is-sexp-p))
+	     (not (= (point-min) (point))))
+    (relisp-navigate-up-to-sexp)))
+
 (defun relisp-mark-sexp-dwim ()
   "Function which attempts to auto-select the \"current\" s-expression the user is working with."
   (interactive)
-  (if (not (equal "(" (relisp-char-at-point)))
-      (search-backward "("))
+  (when (not (relisp-point-is-sexp-p))
+    (relisp-navigate-up-to-sexp))
   (mark-sexp)
   ;; make it easier to select subsequent sibling s-expressions
   (exchange-point-and-mark))
@@ -64,6 +86,7 @@
 
 ;; refactoring implementations
 
+(paredit-hack-kill-region)
 
 ;; (defun relisp-rename-symbol (old-symbol new-symbol)
 ;;   "Renames a symbol within a buffer."
@@ -72,7 +95,7 @@
 (defun relisp-elisp-insert-function (name body)
   "Inserts a ELISP function definition an dbody."
   (let ((doc-start)
-	(doc-end))
+        (doc-end))
     (insert "(defun " name " ()" )
     (newline-and-indent)
     (setq doc-start (+ 1 (point)))
